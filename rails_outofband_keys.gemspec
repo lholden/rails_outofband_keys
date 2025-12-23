@@ -10,9 +10,9 @@ Gem::Specification.new do |spec|
   spec.summary       = "Resolve Rails credentials key files outside the project tree (XDG/AppData + overrides)."
   spec.description   = <<~DESC
     Configures Rails credentials key_path to load environment/master key files
-    from an out-of-band directory (XDG on Unix, AppData on Windows).
+    from an out-of-band directory (XDG on Unix/MacOS, AppData on Windows).
   DESC
-  spec.homepage      = "https://github/lholden/rails_outofband_keys"
+  spec.homepage      = "https://github.com/lholden/rails_outofband_keys"
   spec.license       = "MIT"
 
   spec.required_ruby_version = ">= 3.0"
