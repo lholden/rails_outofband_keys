@@ -5,6 +5,7 @@ require "pathname"
 require "xdg"
 
 module RailsOutofbandKeys
+  # Resolves the path to the credentials key file.
   class KeyResolver
     def initialize(config:, rails_env:, app_name:)
       @config = config
@@ -15,6 +16,23 @@ module RailsOutofbandKeys
     def resolve_key_path
       return nil if ENV["RAILS_MASTER_KEY"] && !ENV["RAILS_MASTER_KEY"].empty?
 
+      key = find_key_in_resolved_dir
+      enforce_permissions!(key) if key
+      key&.to_s
+    end
+
+    private
+
+    def find_key_in_resolved_dir
+      dir = resolved_key_dir
+      env_key = dir.join("#{@rails_env}.key")
+      return env_key if env_key.file?
+
+      master_key = dir.join("master.key")
+      master_key.file? ? master_key : nil
+    end
+
+    def resolved_key_dir
       base = resolve_base_dir
       root = if @config.root_subdir.respond_to?(:call)
                @config.root_subdir.call(@app_name)
@@ -25,19 +43,10 @@ module RailsOutofbandKeys
       # Logic to allow skipping the credentials subfolder if set to nil
       path_parts = [base, root]
       path_parts << @config.credentials_subdir if @config.credentials_subdir
-      dir = Pathname.new(File.join(*path_parts))
-
-      env_key = dir.join("#{@rails_env}.key")
-      master_key = dir.join("master.key")
-
-      key = if env_key.file?
-              env_key
-            else
-              (master_key.file? ? master_key : nil)
-            end
-      enforce_permissions!(key) if key
-      key&.to_s
+      Pathname.new(File.join(*path_parts))
     end
+
+    public
 
     def resolve_base_dir
       # If this specific app has an absolute override, return it directly.
@@ -67,6 +76,5 @@ module RailsOutofbandKeys
 
       raise InsecureKeyPermissionsError.new(path, format("0%o", mode))
     end
-
   end
 end

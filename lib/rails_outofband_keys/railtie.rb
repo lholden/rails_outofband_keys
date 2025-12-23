@@ -3,6 +3,7 @@
 require "rails/railtie"
 
 module RailsOutofbandKeys
+  # Railtie to integrate with Rails and automatically set key_path.
   class Railtie < Rails::Railtie
     config.rails_outofband_keys = RailsOutofbandKeys::Config.new
 

@@ -10,8 +10,5 @@ Style/StringLiterals:
 Style/HashSyntax:
   EnforcedStyle: ruby19
 
-Style/Documentation:
-  Enabled: false
-
 Layout/ExtraSpacing:
   AllowForAlignment: true
