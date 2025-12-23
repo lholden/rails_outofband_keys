@@ -14,8 +14,9 @@ It does **not** replace Rails credentials, change where `credentials.yml.enc` li
   - **Windows**: `%AppData%`
 
 The final path is constructed as:
-`base_directory / root_subdir / credentials_subdir / <environment>.key`
-`base_directory / root_subdir / credentials_subdir / master.key`
+
+ - `base_directory / root_subdir / credentials_subdir / <environment>.key`
+ - `base_directory / root_subdir / credentials_subdir / master.key`
 
 ## Configuration
 
