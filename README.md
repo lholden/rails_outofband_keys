@@ -1,49 +1,47 @@
 # rails_outofband_keys
 
-`rails_outofband_keys` is a small Rails plugin that changes **how Rails finds the credentials key file**
-(e.g. `production.key` / `master.key`) so you can keep key files **out of the project directory / git tree**.
+`rails_outofband_keys` is a Rails plugin that changes **how Rails finds your credentials key files** (e.g., `production.key` or `master.key`). It allows you to keep these sensitive keys **outside of your project directory and git tree** (e.g., in `~/.config/`).
 
-It does **not** replace Rails credentials, does **not** change where `credentials.yml.enc` lives, and does
-**not** change how encryption works. It only sets `config.credentials.key_path`.
+It does **not** replace Rails credentials, change where `credentials.yml.enc` lives, or alter how encryption works. It only dynamically configures `config.credentials.key_path` during the boot process.
 
-## Resolution order
+## Resolution Order
 
-1. If `RAILS_MASTER_KEY` is set, Rails uses it (this gem does nothing).
-2. If `RAILS_CREDENTIALS_KEY_DIR` is set, it is used as the base directory for that specific app.
+1. If `RAILS_MASTER_KEY` is set in the environment, Rails uses it (this gem does nothing).
+2. If `RAILS_CREDENTIALS_KEY_DIR` is set, it is used as the base directory for the app.
 3. If `RAILS_OUTOFBAND_BASE_DIR` is set, it is used as the global base directory.
-4. Otherwise:
-  - Linux/macOS: XDG config directory (`~/.config` fallback)
-  - Windows: `%AppData%`
+4. Otherwise, the gem fallbacks to OS defaults:
+  - **Linux/macOS**: XDG config directory (`~/.config` fallback)
+  - **Windows**: `%AppData%`
 
-Then:
-
-- `<root_subdir>/<credentials_subdir>/<Rails.env>.key`
-- `<root_subdir>/<credentials_subdir>/master.key`
-
-By default, `<root_subdir>` is your application's name (e.g., `my_app`) and `<credentials_subdir>` is `credentials`.
-
-## Permissions
-
-On Unix systems, key files **must** be owner-readable and **must not** be accessible by group or others (e.g., mode `0600` or `0400`). The app will raise an `InsecureKeyPermissionsError` and refuse to boot if permissions are too open.
+The final path is constructed as:
+`base_directory / root_subdir / credentials_subdir / <environment>.key`
+`base_directory / root_subdir / credentials_subdir / master.key`
 
 ## Configuration
 
+Because Rails initializes credentials very early (especially for CLI tools like `credentials:edit`), this gem is configured via a YAML file located at `config/rails_outofband_keys.yml`.
+
+### Example config/rails_outofband_keys.yml
+
+```yaml
+# The sub-folder for your application or organization
+root_subdir: "my_org/my_app"
+
+# The subdirectory where keys are stored (defaults to "credentials")
+# Set to null if keys live directly in the root_subdir
+credentials_subdir: "credentials"
+```
+
+## Permissions
+
+On Unix-like systems, key files **must** have secure permissions. They must be owner-readable and **must not** be accessible by group or others (e.g., mode `0600` or `0400`). The app will raise an `InsecureKeyPermissionsError` and refuse to boot if permissions are too open.
+
+## Installation
+
+Add the gem to your Gemfile:
+
 ```ruby
-# config/application.rb
-
-config.before_configuration do
-  # Change the root directory (defaults to app name)
-  config.rails_outofband_keys.root_subdir = "my_custom_folder"
-
-  # You can also use nested paths to group apps by organization
-  config.rails_outofband_keys.root_subdir = "my_org/my_app"
-
-  # Or use a Proc for dynamic resolution based on the app name
-  config.rails_outofband_keys.root_subdir = ->(app_name) { "internal/#{app_name}" }
-
-  # Change or remove the credentials sub-folder (defaults to "credentials")
-  config.rails_outofband_keys.credentials_subdir = nil # Keys live directly in the root_subdir
-end
+gem "rails_outofband_keys", git: "git@github.com:lholden/rails_outofband_keys.git", tag: "v0.1.1"
 ```
 
 ## License

@@ -34,32 +34,26 @@ module RailsOutofbandKeys
 
     def resolved_key_dir
       base = resolve_base_dir
-      root = if @config.root_subdir.respond_to?(:call)
-               @config.root_subdir.call(@app_name)
-             else
-               @config.root_subdir || @app_name
-             end
+      root = @config.root_subdir || @app_name
 
-      # Logic to allow skipping the credentials subfolder if set to nil
       path_parts = [base, root]
       path_parts << @config.credentials_subdir if @config.credentials_subdir
+
       Pathname.new(File.join(*path_parts))
     end
 
     public
 
     def resolve_base_dir
-      # If this specific app has an absolute override, return it directly.
-      # Pathname#join will ignore the 'base' if 'root' is absolute anyway,
-      # but we'll stick to the current logic for specific overrides.
+      # Specific application override
       override = ENV[@config.key_dir_env].to_s.strip
       return override unless override.empty?
 
-      # Use a global base directory if set, otherwise fallback to OS defaults.
+      # Global base override
       global_base = ENV["RAILS_OUTOFBAND_BASE_DIR"].to_s.strip
       return global_base unless global_base.empty?
 
-      return ENV.fetch("APPDATA", nil) if Gem.win_platform?
+      return ENV.fetch("APPDATA") if Gem.win_platform?
 
       XDG.new.config_home.to_s
     end
