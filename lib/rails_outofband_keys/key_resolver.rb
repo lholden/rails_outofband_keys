@@ -61,7 +61,7 @@ module RailsOutofbandKeys
 
       return ENV.fetch("APPDATA", nil) if Gem.win_platform?
 
-      XDG.config_home.to_s
+      XDG.new.config_home.to_s
     end
 
     def enforce_permissions!(path)
