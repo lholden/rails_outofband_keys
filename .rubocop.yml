@@ -4,6 +4,10 @@ AllCops:
     - 'vendor/**/*'
     - 'bin/*'
 
+plugins:
+  - rubocop-minitest
+  - rubocop-rake
+
 Style/StringLiterals:
   EnforcedStyle: double_quotes
 
@@ -12,3 +16,19 @@ Style/HashSyntax:
 
 Layout/ExtraSpacing:
   AllowForAlignment: true
+
+Metrics/MethodLength:
+  Exclude:
+    - "test/**/*"
+
+Metrics/ClassLength:
+  Exclude:
+    - "test/**/*"
+
+Metrics/AbcSize:
+  Exclude:
+    - "test/**/*"
+
+Metrics/BlockLength:
+  Exclude:
+    - "test/**/*"

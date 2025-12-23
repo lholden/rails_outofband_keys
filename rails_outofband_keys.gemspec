@@ -20,7 +20,8 @@ Gem::Specification.new do |spec|
   spec.files = Dir.glob("{lib}/**/*") + %w[README.md]
   spec.require_paths = ["lib"]
 
+  spec.metadata["rubygems_mfa_required"] = "true"
+
   spec.add_dependency "railties", ">= 6.0"
   spec.add_dependency "xdg", ">= 2.2"
-  spec.metadata["rubygems_mfa_required"] = "true"
 end
