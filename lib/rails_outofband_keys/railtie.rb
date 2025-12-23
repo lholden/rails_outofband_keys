@@ -11,7 +11,7 @@ module RailsOutofbandKeys
       resolver = KeyResolver.new(
         config: app.config.rails_outofband_keys,
         rails_env: Rails.env,
-        app_name: app.railtie_name
+        app_name: app.class.module_parent_name.underscore
       )
 
       key_path = resolver.resolve_key_path

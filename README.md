@@ -12,8 +12,8 @@ It does **not** replace Rails credentials, does **not** change where `credential
 2. If `RAILS_CREDENTIALS_KEY_DIR` is set, it is used as the base directory for that specific app.
 3. If `RAILS_OUTOFBAND_BASE_DIR` is set, it is used as the global base directory.
 4. Otherwise:
-   - Linux/macOS: XDG config directory (`~/.config` fallback)
-   - Windows: `%AppData%`
+  - Linux/macOS: XDG config directory (`~/.config` fallback)
+  - Windows: `%AppData%`
 
 Then:
 
@@ -31,17 +31,19 @@ On Unix systems, key files **must** be owner-readable and **must not** be access
 ```ruby
 # config/application.rb
 
-# Change the root directory (defaults to app name)
-config.rails_outofband_keys.root_subdir = "my_custom_folder"
+config.before_configuration do
+  # Change the root directory (defaults to app name)
+  config.rails_outofband_keys.root_subdir = "my_custom_folder"
 
-# You can also use nested paths to group apps by organization
-config.rails_outofband_keys.root_subdir = "my_org/my_app"
+  # You can also use nested paths to group apps by organization
+  config.rails_outofband_keys.root_subdir = "my_org/my_app"
 
-# Or use a Proc for dynamic resolution based on the app name
-config.rails_outofband_keys.root_subdir = ->(app_name) { "internal/#{app_name}" }
+  # Or use a Proc for dynamic resolution based on the app name
+  config.rails_outofband_keys.root_subdir = ->(app_name) { "internal/#{app_name}" }
 
-# Change or remove the credentials sub-folder (defaults to "credentials")
-config.rails_outofband_keys.credentials_subdir = nil # Keys live directly in the root_subdir
+  # Change or remove the credentials sub-folder (defaults to "credentials")
+  config.rails_outofband_keys.credentials_subdir = nil # Keys live directly in the root_subdir
+end
 ```
 
 ## License
