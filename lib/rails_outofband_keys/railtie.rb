@@ -32,9 +32,7 @@ module RailsOutofbandKeys
         app.config.credentials.key_path = key_path
 
         # Clear any early-cached credentials object to ensure the new path is used.
-        if app.instance_variable_defined?(:@credentials)
-          app.remove_instance_variable(:@credentials)
-        end
+        app.remove_instance_variable(:@credentials) if app.instance_variable_defined?(:@credentials)
       end
     end
   end
