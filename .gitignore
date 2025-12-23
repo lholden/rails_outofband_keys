@@ -1,0 +1,37 @@
+# --- Ruby / Bundler ---
+*.gem
+*.rbc
+/pids
+/logs
+/tmp
+/vendor/bundle
+/.bundle
+/.yardoc
+/_yardoc
+/doc/
+/pkg/
+/spec/reports/
+/coverage/
+/InstalledFiles
+.config
+
+# --- JetBrains IDEs (RubyMine) ---
+.idea/
+*.iml
+
+# --- OS / System ---
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# --- Development Overrides ---
+# Ignore local environment variable files
+.env
+.env*.local
+*.key
