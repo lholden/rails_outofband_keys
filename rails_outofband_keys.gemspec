@@ -7,11 +7,16 @@ Gem::Specification.new do |spec|
   spec.version       = RailsOutofbandKeys::VERSION
   spec.authors       = ["Lori Holden"]
   spec.email         = ["git@loriholden.com"]
-  spec.summary       = "Resolve Rails credentials key files outside the project tree (XDG/AppData + overrides)."
-  spec.description   = <<~DESC
-    Configures Rails credentials key_path to load environment/master key files
-    from an out-of-band directory (XDG on Unix/MacOS, AppData on Windows).
+
+  spec.summary       = "Load Rails credentials keys from outside your repo."
+  spec.description = <<~DESC
+    Configures Rails to load credentials master and environment key files from an out-of-band location
+    (XDG on Linux/macOS, AppData on Windows) instead of the project directory.
+
+    This reduces the risk of key exposure from tooling that reads or executes within your repo,
+    including modern AI assistants and agentic tools.
   DESC
+
   spec.homepage      = "https://github.com/lholden/rails_outofband_keys"
   spec.license       = "MIT"
 
@@ -21,6 +26,8 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.metadata["rubygems_mfa_required"] = "true"
+  spec.metadata["homepage_uri"] = spec.homepage
+  spec.metadata["source_code_uri"] = spec.homepage
 
   spec.add_dependency "railties", ">= 6.0"
   spec.add_dependency "xdg", ">= 2.2"
