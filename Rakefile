@@ -31,3 +31,9 @@ task :console do
   ARGV.clear
   IRB.start
 end
+
+desc "Publish a GitHub release for the current version."
+task :github_release do
+  version = RailsOutofbandKeys::VERSION
+  sh "gh release create v#{version} pkg/rails_outofband_keys-#{version}.gem --generate-notes"
+end
