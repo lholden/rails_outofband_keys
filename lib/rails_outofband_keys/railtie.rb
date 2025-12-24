@@ -10,12 +10,15 @@ module RailsOutofbandKeys
 
     config.before_configuration do |app|
       # Load file-based configuration.
-      config_file = File.join(Dir.getwd, "config", "rails_outofband_keys.yml")
+      config_file = app.root.join("config", "rails_outofband_keys.yml")
+      if config_file.file?
+        data = YAML.safe_load_file(config_file.to_s, permitted_classes: [], aliases: false)
+        data = {} unless data.is_a?(Hash)
 
-      if File.exist?(config_file)
-        external_config = YAML.load_file(config_file)
-        app.config.rails_outofband_keys.root_subdir = external_config["root_subdir"]
-        app.config.rails_outofband_keys.credentials_subdir = external_config.fetch("credentials_subdir", "credentials")
+        app.config.rails_outofband_keys.root_subdir = data["root_subdir"]
+        if data.key?("credentials_subdir")
+          app.config.rails_outofband_keys.credentials_subdir = data["credentials_subdir"]
+        end
       end
 
       # Identify the app name for path resolution.
@@ -28,12 +31,12 @@ module RailsOutofbandKeys
       )
 
       key_path = resolver.resolve_key_path
-      if key_path
-        app.config.credentials.key_path = key_path
+      next unless key_path
 
-        # Clear any early-cached credentials object to ensure the new path is used.
-        app.remove_instance_variable(:@credentials) if app.instance_variable_defined?(:@credentials)
-      end
+      app.config.credentials.key_path = key_path
+
+      # Clear any early-cached credentials object to ensure the new path is used.
+      app.remove_instance_variable(:@credentials) if app.instance_variable_defined?(:@credentials)
     end
   end
 end

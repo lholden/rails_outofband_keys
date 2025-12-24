@@ -56,7 +56,7 @@ On Unix-like systems, key files **must** have secure permissions. They must be o
 Add the gem to your Gemfile:
 
 ```ruby
-gem "rails_outofband_keys", "~> 0.1.1"
+gem "rails_outofband_keys"
 ```
 
 ## License
